@@ -121,3 +121,13 @@ func (cs *CipherState) Clear() {
 	cs.aead = nil
 	cs.nonce = 0
 }
+
+// Key returns a copy of the cipher key.
+func (cs *CipherState) Key() []byte {
+	if cs.key == nil {
+		return nil
+	}
+	key := make([]byte, len(cs.key))
+	copy(key, cs.key)
+	return key
+}
