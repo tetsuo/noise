@@ -1,23 +1,23 @@
-package noisehandshake_test
+package noise_test
 
 import (
 	"bytes"
 	"testing"
 
-	nhs "github.com/tetsuo/noisehandshake"
+	"github.com/tetsuo/noise"
 )
 
 func TestBasicHandshakeXX(t *testing.T) {
 	// Create initiator
-	initiatorConfig := &nhs.Config{}
-	initiator, err := nhs.NewNoiseState(nhs.PatternXX, true, initiatorConfig)
+	initiatorConfig := &noise.Config{}
+	initiator, err := noise.NewNoiseState(noise.PatternXX, true, initiatorConfig)
 	if err != nil {
 		t.Fatalf("Failed to create initiator: %v", err)
 	}
 
 	// Create responder
-	responderConfig := &nhs.Config{}
-	responder, err := nhs.NewNoiseState(nhs.PatternXX, false, responderConfig)
+	responderConfig := &noise.Config{}
+	responder, err := noise.NewNoiseState(noise.PatternXX, false, responderConfig)
 	if err != nil {
 		t.Fatalf("Failed to create responder: %v", err)
 	}
@@ -102,12 +102,12 @@ func TestBasicHandshakeXX(t *testing.T) {
 
 func TestHandshakeWithPayloadXX(t *testing.T) {
 	// Create initiator and responder
-	initiator, err := nhs.NewNoiseState(nhs.PatternXX, true, &nhs.Config{})
+	initiator, err := noise.NewNoiseState(noise.PatternXX, true, &noise.Config{})
 	if err != nil {
 		t.Fatalf("Failed to create initiator: %v", err)
 	}
 
-	responder, err := nhs.NewNoiseState(nhs.PatternXX, false, &nhs.Config{})
+	responder, err := noise.NewNoiseState(noise.PatternXX, false, &noise.Config{})
 	if err != nil {
 		t.Fatalf("Failed to create responder: %v", err)
 	}
@@ -169,12 +169,12 @@ func TestHandshakeWithPayloadXX(t *testing.T) {
 
 func TestTransportMessagesXX(t *testing.T) {
 	// Complete a handshake
-	initiator, err := nhs.NewNoiseState(nhs.PatternXX, true, &nhs.Config{})
+	initiator, err := noise.NewNoiseState(noise.PatternXX, true, &noise.Config{})
 	if err != nil {
 		t.Fatalf("Failed to create initiator: %v", err)
 	}
 
-	responder, err := nhs.NewNoiseState(nhs.PatternXX, false, &nhs.Config{})
+	responder, err := noise.NewNoiseState(noise.PatternXX, false, &noise.Config{})
 	if err != nil {
 		t.Fatalf("Failed to create responder: %v", err)
 	}
@@ -231,12 +231,12 @@ func TestTransportMessagesXX(t *testing.T) {
 }
 
 func TestNNPattern(t *testing.T) {
-	initiator, err := nhs.NewNoiseState(nhs.PatternNN, true, &nhs.Config{})
+	initiator, err := noise.NewNoiseState(noise.PatternNN, true, &noise.Config{})
 	if err != nil {
 		t.Fatalf("Failed to create initiator: %v", err)
 	}
 
-	responder, err := nhs.NewNoiseState(nhs.PatternNN, false, &nhs.Config{})
+	responder, err := noise.NewNoiseState(noise.PatternNN, false, &noise.Config{})
 	if err != nil {
 		t.Fatalf("Failed to create responder: %v", err)
 	}
@@ -279,12 +279,12 @@ func TestNNPattern(t *testing.T) {
 func TestPSKHandshakeXXpsk0(t *testing.T) {
 	psk := []byte("my-shared-secret-key-32-bytes!!!")
 
-	initiator, err := nhs.NewNoiseState(nhs.PatternXXpsk0, true, &nhs.Config{PSK: psk})
+	initiator, err := noise.NewNoiseState(noise.PatternXXpsk0, true, &noise.Config{PSK: psk})
 	if err != nil {
 		t.Fatalf("Failed to create initiator: %v", err)
 	}
 
-	responder, err := nhs.NewNoiseState(nhs.PatternXXpsk0, false, &nhs.Config{PSK: psk})
+	responder, err := noise.NewNoiseState(noise.PatternXXpsk0, false, &noise.Config{PSK: psk})
 	if err != nil {
 		t.Fatalf("Failed to create responder: %v", err)
 	}
@@ -328,14 +328,14 @@ func TestPSKHandshakeXXpsk0(t *testing.T) {
 
 func TestIKPattern(t *testing.T) {
 	// Responder generates static key in advance
-	responder, err := nhs.NewNoiseState(nhs.PatternIK, false, &nhs.Config{})
+	responder, err := noise.NewNoiseState(noise.PatternIK, false, &noise.Config{})
 	if err != nil {
 		t.Fatalf("Failed to create responder: %v", err)
 	}
 	responderStaticPub := responder.StaticPublicKey()
 
 	// Initiator knows responder's static public key
-	initiator, err := nhs.NewNoiseState(nhs.PatternIK, true, &nhs.Config{})
+	initiator, err := noise.NewNoiseState(noise.PatternIK, true, &noise.Config{})
 	if err != nil {
 		t.Fatalf("Failed to create initiator: %v", err)
 	}
@@ -376,13 +376,13 @@ func TestIKPattern(t *testing.T) {
 
 func TestXKPattern(t *testing.T) {
 	// Responder has a known static key; initiator knows it in advance
-	responder, err := nhs.NewNoiseState(nhs.PatternXK, false, &nhs.Config{})
+	responder, err := noise.NewNoiseState(noise.PatternXK, false, &noise.Config{})
 	if err != nil {
 		t.Fatalf("Failed to create responder: %v", err)
 	}
 	responderStaticPub := responder.StaticPublicKey()
 
-	initiator, err := nhs.NewNoiseState(nhs.PatternXK, true, &nhs.Config{})
+	initiator, err := noise.NewNoiseState(noise.PatternXK, true, &noise.Config{})
 	if err != nil {
 		t.Fatalf("Failed to create initiator: %v", err)
 	}
@@ -447,11 +447,11 @@ func TestXKPattern(t *testing.T) {
 func TestNNpsk0Pattern(t *testing.T) {
 	psk := []byte("nNpsk0-shared-secret-32-bytes!!!")
 
-	initiator, err := nhs.NewNoiseState(nhs.PatternNNpsk0, true, &nhs.Config{PSK: psk})
+	initiator, err := noise.NewNoiseState(noise.PatternNNpsk0, true, &noise.Config{PSK: psk})
 	if err != nil {
 		t.Fatalf("Failed to create initiator: %v", err)
 	}
-	responder, err := nhs.NewNoiseState(nhs.PatternNNpsk0, false, &nhs.Config{PSK: psk})
+	responder, err := noise.NewNoiseState(noise.PatternNNpsk0, false, &noise.Config{PSK: psk})
 	if err != nil {
 		t.Fatalf("Failed to create responder: %v", err)
 	}
@@ -490,11 +490,11 @@ func TestNNpsk0Pattern(t *testing.T) {
 
 func TestRemoteStaticPublicKey(t *testing.T) {
 	// After an XX handshake, each side should know the other's static public key
-	initiator, err := nhs.NewNoiseState(nhs.PatternXX, true, &nhs.Config{})
+	initiator, err := noise.NewNoiseState(noise.PatternXX, true, &noise.Config{})
 	if err != nil {
 		t.Fatalf("Failed to create initiator: %v", err)
 	}
-	responder, err := nhs.NewNoiseState(nhs.PatternXX, false, &nhs.Config{})
+	responder, err := noise.NewNoiseState(noise.PatternXX, false, &noise.Config{})
 	if err != nil {
 		t.Fatalf("Failed to create responder: %v", err)
 	}
@@ -524,8 +524,8 @@ func TestRemoteStaticPublicKey(t *testing.T) {
 }
 
 func TestSendAfterComplete(t *testing.T) {
-	initiator, _ := nhs.NewNoiseState(nhs.PatternNN, true, &nhs.Config{})
-	responder, _ := nhs.NewNoiseState(nhs.PatternNN, false, &nhs.Config{})
+	initiator, _ := noise.NewNoiseState(noise.PatternNN, true, &noise.Config{})
+	responder, _ := noise.NewNoiseState(noise.PatternNN, false, &noise.Config{})
 	initiator.Initialize(nil, nil)
 	responder.Initialize(nil, nil)
 
@@ -544,13 +544,13 @@ func TestSendAfterComplete(t *testing.T) {
 }
 
 func TestPSKInvalidLength(t *testing.T) {
-	_, err := nhs.NewNoiseState(nhs.PatternXXpsk0, true, &nhs.Config{PSK: []byte("short")})
+	_, err := noise.NewNoiseState(noise.PatternXXpsk0, true, &noise.Config{PSK: []byte("short")})
 	if err == nil {
 		t.Error("Expected error for PSK shorter than 32 bytes")
 	}
 
 	longPSK := make([]byte, 33)
-	_, err = nhs.NewNoiseState(nhs.PatternXXpsk0, true, &nhs.Config{PSK: longPSK})
+	_, err = noise.NewNoiseState(noise.PatternXXpsk0, true, &noise.Config{PSK: longPSK})
 	if err == nil {
 		t.Error("Expected error for PSK longer than 32 bytes")
 	}

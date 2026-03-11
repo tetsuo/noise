@@ -1,8 +1,8 @@
-# noisehandshake
+# noise
 
-A pure Go implementation of the core [Noise Protocol](https://noiseprotocol.org/) handshake patterns.
+[Noise Protocol Framework](https://noiseprotocol.org/) implementation in Go.
 
-**Supported patterns**:
+**Supported handshake patterns**:
 
 - **NN**: Basic ephemeral key exchange (no authentication)
 - **XX**: Full mutual authentication with ephemeral and static keys
@@ -21,24 +21,24 @@ import (
     "fmt"
     "log"
 
-    nhs "github.com/tetsuo/noisehandshake"
+    "github.com/tetsuo/noise"
 )
 
 func main() {
     // Create initiator and responder
-    initiator, err := nhs.NewNoiseState(
-        nhs.PatternXX,
+    initiator, err := noise.NewNoiseState(
+        noise.PatternXX,
         true, // initiator role
-        &nhs.Config{},
+        &noise.Config{},
     )
     if err != nil {
         log.Fatal(err)
     }
 
-    responder, err := nhs.NewNoiseState(
-        nhs.PatternXX,
+    responder, err := noise.NewNoiseState(
+        noise.PatternXX,
         false, // responder role
-        &nhs.Config{},
+        &noise.Config{},
     )
     if err != nil {
         log.Fatal(err)
@@ -93,16 +93,16 @@ func main() {
 // Use a pre-shared key for authentication
 psk := []byte("my-32-byte-pre-shared-key-here!!")
 
-initiator, _ := nhs.NewNoiseState(
-    nhs.PatternXXpsk0,
+initiator, _ := noise.NewNoiseState(
+    noise.PatternXXpsk0,
     true,
-    &nhs.Config{PSK: psk},
+    &noise.Config{PSK: psk},
 )
 
-responder, _ := nhs.NewNoiseState(
-    nhs.PatternXXpsk0,
+responder, _ := noise.NewNoiseState(
+    noise.PatternXXpsk0,
     false,
-    &nhs.Config{PSK: psk},
+    &noise.Config{PSK: psk},
 )
 ```
 
@@ -112,10 +112,10 @@ responder, _ := nhs.NewNoiseState(
 // Responder's static public key is known in advance
 responderStaticKey := getResponderPublicKey()
 
-initiator, _ := nhs.NewNoiseState(
-    nhs.PatternIK,
+initiator, _ := noise.NewNoiseState(
+    noise.PatternIK,
     true,
-    &nhs.Config{},
+    &noise.Config{},
 )
 
 // Initialize with remote static key
@@ -126,7 +126,7 @@ initiator.Initialize(prologue, responderStaticKey)
 
 ```go
 // Generate or load static keypair
-curve := nhs.DefaultCurve
+curve := noise.DefaultCurve
 staticKeypair, _ := curve.GenerateKeyPair(nil)
 
 // Or use a seed for deterministic keys
@@ -134,10 +134,10 @@ seed := make([]byte, 32)
 // ... fill seed ...
 staticKeypair, _ = curve.GenerateKeyPair(seed)
 
-initiator, _ := nhs.NewNoiseState(
-    nhs.PatternXX,
+initiator, _ := noise.NewNoiseState(
+    noise.PatternXX,
     true,
-    &nhs.Config{StaticKeypair: staticKeypair},
+    &noise.Config{StaticKeypair: staticKeypair},
 )
 ```
 

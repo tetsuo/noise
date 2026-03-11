@@ -1,28 +1,28 @@
-package noisehandshake_test
+package noise_test
 
 import (
 	"fmt"
 	"log"
 
-	nhs "github.com/tetsuo/noisehandshake"
+	"github.com/tetsuo/noise"
 )
 
 // Example demonstrates a basic XX handshake pattern.
 func Example() {
 	// Create initiator and responder
-	initiator, err := nhs.NewNoiseState(
-		nhs.PatternXX,
+	initiator, err := noise.NewNoiseState(
+		noise.PatternXX,
 		true,
-		&nhs.Config{},
+		&noise.Config{},
 	)
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	responder, err := nhs.NewNoiseState(
-		nhs.PatternXX,
+	responder, err := noise.NewNoiseState(
+		noise.PatternXX,
 		false,
-		&nhs.Config{},
+		&noise.Config{},
 	)
 	if err != nil {
 		log.Fatal(err)
@@ -70,16 +70,16 @@ func Example() {
 func Example_psk() {
 	psk := []byte("my-32-byte-pre-shared-key-here!!")
 
-	initiator, _ := nhs.NewNoiseState(
-		nhs.PatternXXpsk0,
+	initiator, _ := noise.NewNoiseState(
+		noise.PatternXXpsk0,
 		true,
-		&nhs.Config{PSK: psk},
+		&noise.Config{PSK: psk},
 	)
 
-	responder, _ := nhs.NewNoiseState(
-		nhs.PatternXXpsk0,
+	responder, _ := noise.NewNoiseState(
+		noise.PatternXXpsk0,
 		false,
-		&nhs.Config{PSK: psk},
+		&noise.Config{PSK: psk},
 	)
 
 	prologue := []byte("PSK Demo")
@@ -103,18 +103,18 @@ func Example_psk() {
 // Example_ik demonstrates IK pattern with pre-known responder key.
 func Example_ik() {
 	// Responder has a known static key
-	responder, _ := nhs.NewNoiseState(
-		nhs.PatternIK,
+	responder, _ := noise.NewNoiseState(
+		noise.PatternIK,
 		false,
-		&nhs.Config{},
+		&noise.Config{},
 	)
 	responderPublicKey := responder.StaticPublicKey()
 
 	// Initiator knows responder's key in advance
-	initiator, _ := nhs.NewNoiseState(
-		nhs.PatternIK,
+	initiator, _ := noise.NewNoiseState(
+		noise.PatternIK,
 		true,
-		&nhs.Config{},
+		&noise.Config{},
 	)
 
 	prologue := []byte("IK Demo")
@@ -135,23 +135,23 @@ func Example_ik() {
 
 // Example_customKeys demonstrates using custom static keypairs.
 func Example_customKeys() {
-	curve := nhs.DefaultCurve
+	curve := noise.DefaultCurve
 
 	// Generate static keypairs
 	initiatorStatic, _ := curve.GenerateKeyPair(nil)
 	responderStatic, _ := curve.GenerateKeyPair(nil)
 
 	// Create states with custom keys
-	initiator, _ := nhs.NewNoiseState(
-		nhs.PatternXX,
+	initiator, _ := noise.NewNoiseState(
+		noise.PatternXX,
 		true,
-		&nhs.Config{StaticKeypair: initiatorStatic},
+		&noise.Config{StaticKeypair: initiatorStatic},
 	)
 
-	responder, _ := nhs.NewNoiseState(
-		nhs.PatternXX,
+	responder, _ := noise.NewNoiseState(
+		noise.PatternXX,
 		false,
-		&nhs.Config{StaticKeypair: responderStatic},
+		&noise.Config{StaticKeypair: responderStatic},
 	)
 
 	prologue := []byte{}

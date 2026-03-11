@@ -1,4 +1,4 @@
-package noisehandshake
+package noise
 
 import (
 	"crypto/cipher"

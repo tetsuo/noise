@@ -1,4 +1,4 @@
-package noisehandshake
+package noise
 
 // symmetricState extends CipherState with hashing and key derivation.
 type symmetricState struct {

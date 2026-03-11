@@ -1,4 +1,4 @@
-module github.com/tetsuo/noisehandshake
+module github.com/tetsuo/noise
 
 go 1.25.0
 

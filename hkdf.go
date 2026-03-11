@@ -1,4 +1,4 @@
-package noisehandshake
+package noise
 
 import (
 	"crypto/hmac"
@@ -16,7 +16,7 @@ const (
 func newBLAKE2b512() hash.Hash {
 	h, err := blake2b.New512(nil)
 	if err != nil {
-		panic(fmt.Sprintf("noisehandshake: could not create BLAKE2b-512 hash: %v", err))
+		panic(fmt.Sprintf("noise: could not create BLAKE2b-512 hash: %v", err))
 	}
 	return h
 }
