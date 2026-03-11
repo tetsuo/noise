@@ -1,3 +1,5 @@
+// Package noisehandshake implements cryptographic handshake patterns as defined
+// in the Noise Protocol Framework.
 package noisehandshake
 
 import (
