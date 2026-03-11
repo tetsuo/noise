@@ -83,8 +83,8 @@ func TestBasicHandshakeXX(t *testing.T) {
 	}
 
 	// Verify handshake hashes match and are non-zero
-	initHash := initiator.GetHash()
-	respHash := responder.GetHash()
+	initHash := initiator.Hash()
+	respHash := responder.Hash()
 	if !bytes.Equal(initHash, respHash) {
 		t.Error("Handshake hashes do not match")
 	}
@@ -199,12 +199,12 @@ func TestTransportMessagesXX(t *testing.T) {
 	plaintext := []byte("Secret message")
 
 	// Initiator sends to responder
-	ciphertext, err := initiator.GetTX().Encrypt(nil, plaintext, nil)
+	ciphertext, err := initiator.Tx().Encrypt(nil, plaintext, nil)
 	if err != nil {
 		t.Fatalf("Failed to encrypt: %v", err)
 	}
 
-	decrypted, err := responder.GetRX().Decrypt(nil, ciphertext, nil)
+	decrypted, err := responder.Rx().Decrypt(nil, ciphertext, nil)
 	if err != nil {
 		t.Fatalf("Failed to decrypt: %v", err)
 	}
@@ -215,12 +215,12 @@ func TestTransportMessagesXX(t *testing.T) {
 
 	// Responder sends to initiator
 	plaintext2 := []byte("Secret reply")
-	ciphertext2, err := responder.GetTX().Encrypt(nil, plaintext2, nil)
+	ciphertext2, err := responder.Tx().Encrypt(nil, plaintext2, nil)
 	if err != nil {
 		t.Fatalf("Failed to encrypt reply: %v", err)
 	}
 
-	decrypted2, err := initiator.GetRX().Decrypt(nil, ciphertext2, nil)
+	decrypted2, err := initiator.Rx().Decrypt(nil, ciphertext2, nil)
 	if err != nil {
 		t.Fatalf("Failed to decrypt reply: %v", err)
 	}
@@ -310,10 +310,10 @@ func TestPSKHandshakeXXpsk0(t *testing.T) {
 	}
 
 	// Verify hashes match and are non-zero
-	if !bytes.Equal(initiator.GetHash(), responder.GetHash()) {
+	if !bytes.Equal(initiator.Hash(), responder.Hash()) {
 		t.Error("PSK handshake hashes do not match")
 	}
-	hash := initiator.GetHash()
+	hash := initiator.Hash()
 	allZero := true
 	for _, b := range hash {
 		if b != 0 {
@@ -332,7 +332,7 @@ func TestIKPattern(t *testing.T) {
 	if err != nil {
 		t.Fatalf("Failed to create responder: %v", err)
 	}
-	responderStaticPub := responder.GetStaticPublicKey()
+	responderStaticPub := responder.StaticPublicKey()
 
 	// Initiator knows responder's static public key
 	initiator, err := nhs.NewNoiseState(nhs.PatternIK, true, &nhs.Config{})
@@ -380,7 +380,7 @@ func TestXKPattern(t *testing.T) {
 	if err != nil {
 		t.Fatalf("Failed to create responder: %v", err)
 	}
-	responderStaticPub := responder.GetStaticPublicKey()
+	responderStaticPub := responder.StaticPublicKey()
 
 	initiator, err := nhs.NewNoiseState(nhs.PatternXK, true, &nhs.Config{})
 	if err != nil {
@@ -425,17 +425,17 @@ func TestXKPattern(t *testing.T) {
 	}
 
 	// Both sides should arrive at the same hash
-	if !bytes.Equal(initiator.GetHash(), responder.GetHash()) {
+	if !bytes.Equal(initiator.Hash(), responder.Hash()) {
 		t.Error("XK handshake hashes do not match")
 	}
 
 	// Transport: initiator -> responder and back
 	plain := []byte("XK transport test")
-	ct, err := initiator.GetTX().Encrypt(nil, plain, nil)
+	ct, err := initiator.Tx().Encrypt(nil, plain, nil)
 	if err != nil {
 		t.Fatalf("Failed to encrypt: %v", err)
 	}
-	got, err := responder.GetRX().Decrypt(nil, ct, nil)
+	got, err := responder.Rx().Decrypt(nil, ct, nil)
 	if err != nil {
 		t.Fatalf("Failed to decrypt: %v", err)
 	}
@@ -483,12 +483,12 @@ func TestNNpsk0Pattern(t *testing.T) {
 	if !initiator.IsComplete() || !responder.IsComplete() {
 		t.Error("NNpsk0 handshake not complete")
 	}
-	if !bytes.Equal(initiator.GetHash(), responder.GetHash()) {
+	if !bytes.Equal(initiator.Hash(), responder.Hash()) {
 		t.Error("NNpsk0 handshake hashes do not match")
 	}
 }
 
-func TestGetRemoteStaticPublicKey(t *testing.T) {
+func TestRemoteStaticPublicKey(t *testing.T) {
 	// After an XX handshake, each side should know the other's static public key
 	initiator, err := nhs.NewNoiseState(nhs.PatternXX, true, &nhs.Config{})
 	if err != nil {
@@ -499,8 +499,8 @@ func TestGetRemoteStaticPublicKey(t *testing.T) {
 		t.Fatalf("Failed to create responder: %v", err)
 	}
 
-	initStaticPub := initiator.GetStaticPublicKey()
-	respStaticPub := responder.GetStaticPublicKey()
+	initStaticPub := initiator.StaticPublicKey()
+	respStaticPub := responder.StaticPublicKey()
 
 	prologue := []byte("remote-static-test")
 	initiator.Initialize(prologue, nil)
@@ -514,11 +514,11 @@ func TestGetRemoteStaticPublicKey(t *testing.T) {
 	responder.Recv(msg3)
 
 	// Initiator should have learned responder's static key
-	if !bytes.Equal(initiator.GetRemoteStaticPublicKey(), respStaticPub) {
+	if !bytes.Equal(initiator.RemoteStaticPublicKey(), respStaticPub) {
 		t.Error("Initiator has wrong remote static public key")
 	}
 	// Responder should have learned initiator's static key
-	if !bytes.Equal(responder.GetRemoteStaticPublicKey(), initStaticPub) {
+	if !bytes.Equal(responder.RemoteStaticPublicKey(), initStaticPub) {
 		t.Error("Responder has wrong remote static public key")
 	}
 }

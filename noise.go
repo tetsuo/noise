@@ -396,7 +396,7 @@ func (ns *NoiseState) Recv(message []byte) ([]byte, error) {
 
 // final completes the handshake and derives transport keys.
 func (ns *NoiseState) final() error {
-	ns.hash = ns.getHandshakeHash()
+	ns.hash = ns.handshakeHash()
 
 	keys, err := ns.split()
 	if err != nil {
@@ -456,8 +456,8 @@ func (ns *NoiseState) IsComplete() bool {
 	return ns.complete
 }
 
-// GetHash returns the handshake hash (only valid after completion).
-func (ns *NoiseState) GetHash() []byte {
+// Hash returns the handshake hash (only valid after completion).
+func (ns *NoiseState) Hash() []byte {
 	if ns.hash != nil {
 		result := make([]byte, len(ns.hash))
 		copy(result, ns.hash)
@@ -466,18 +466,18 @@ func (ns *NoiseState) GetHash() []byte {
 	return nil
 }
 
-// GetTX returns the transmit cipher state (only valid after completion).
-func (ns *NoiseState) GetTX() *CipherState {
+// Tx returns the transmit cipher state (only valid after completion).
+func (ns *NoiseState) Tx() *CipherState {
 	return ns.tx
 }
 
-// GetRX returns the receive cipher state (only valid after completion).
-func (ns *NoiseState) GetRX() *CipherState {
+// Rx returns the receive cipher state (only valid after completion).
+func (ns *NoiseState) Rx() *CipherState {
 	return ns.rx
 }
 
-// GetStaticPublicKey returns the local static public key.
-func (ns *NoiseState) GetStaticPublicKey() []byte {
+// StaticPublicKey returns the local static public key.
+func (ns *NoiseState) StaticPublicKey() []byte {
 	if ns.s != nil {
 		key := make([]byte, len(ns.s.PublicKey))
 		copy(key, ns.s.PublicKey)
@@ -486,8 +486,8 @@ func (ns *NoiseState) GetStaticPublicKey() []byte {
 	return nil
 }
 
-// GetRemoteStaticPublicKey returns a copy of the remote static public key (rs).
-func (ns *NoiseState) GetRemoteStaticPublicKey() []byte {
+// RemoteStaticPublicKey returns a copy of the remote static public key (rs).
+func (ns *NoiseState) RemoteStaticPublicKey() []byte {
 	if ns.rs == nil {
 		return nil
 	}
@@ -503,9 +503,7 @@ type keyPatternResult struct {
 }
 
 // getKeyPattern determines which keys to use based on token and role.
-func getKeyPattern(token Token, initiator bool) keyPatternResult {
-	result := keyPatternResult{}
-
+func getKeyPattern(token Token, initiator bool) (result keyPatternResult) {
 	switch token {
 	case TokenEE:
 		// Both ephemeral

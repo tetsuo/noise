@@ -54,8 +54,8 @@ func Example() {
 
 		// Use transport keys for encrypted communication
 		plaintext := []byte("Secret")
-		ciphertext, _ := initiator.GetTX().Encrypt(nil, plaintext, nil)
-		decrypted, _ := responder.GetRX().Decrypt(nil, ciphertext, nil)
+		ciphertext, _ := initiator.Tx().Encrypt(nil, plaintext, nil)
+		decrypted, _ := responder.Rx().Decrypt(nil, ciphertext, nil)
 		fmt.Printf("Transport message: %s\n", decrypted)
 	}
 
@@ -108,7 +108,7 @@ func Example_ik() {
 		false,
 		&nhs.Config{},
 	)
-	responderPublicKey := responder.GetStaticPublicKey()
+	responderPublicKey := responder.StaticPublicKey()
 
 	// Initiator knows responder's key in advance
 	initiator, _ := nhs.NewNoiseState(

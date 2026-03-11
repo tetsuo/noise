@@ -68,15 +68,15 @@ func main() {
     if initiator.IsComplete() && responder.IsComplete() {
         fmt.Println("Handshake complete!")
 
-        // Get handshake hash (can be used for channel binding)
-        hash := initiator.GetHash()
+        // Handshake hash (can be used for channel binding)
+        hash := initiator.Hash()
         fmt.Printf("Handshake hash: %x\n", hash)
 
-        // Get transport cipher states
-        txInit := initiator.GetTX()
-        rxInit := initiator.GetRX()
-        txResp := responder.GetTX()
-        rxResp := responder.GetRX()
+        // Transport cipher states
+        txInit := initiator.Tx()
+        rxInit := initiator.Rx()
+        txResp := responder.Tx()
+        rxResp := responder.Rx()
 
         // Send encrypted messages
         plaintext := []byte("Secret message")

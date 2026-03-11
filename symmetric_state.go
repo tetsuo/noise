@@ -97,8 +97,8 @@ func (ss *symmetricState) decryptAndHash(ciphertext []byte) ([]byte, error) {
 	return plaintext, nil
 }
 
-// getHandshakeHash returns the current handshake hash.
-func (ss *symmetricState) getHandshakeHash() []byte {
+// handshakeHash returns the current handshake hash.
+func (ss *symmetricState) handshakeHash() []byte {
 	hash := make([]byte, hashLen)
 	copy(hash, ss.digest)
 	return hash
